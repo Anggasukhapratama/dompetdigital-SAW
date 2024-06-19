@@ -1,0 +1,54 @@
+.bg-gradient-primary {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(45deg, #28a745, #218838);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(45deg, #ffc107, #e0a800);
+}
+
+.card-header {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.card-title {
+    font-size: 3rem;
+}
+
+.card-footer a {
+    font-size: 1rem;
+}
+
+.card {
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.btn-view-details {
+    background-color: #ffffff;
+    color: #333;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s;
+}
+
+.btn-view-details:hover {
+    background-color: #f8f9fa;
+    color: #000;
+    transform: translateY(-2px);
+}
+
+.btn-view-details:focus, .btn-view-details:active {
+    outline: none;
+    box-shadow: none;
+}
