@@ -86,50 +86,51 @@ class KriteriaController extends Controller
     }
 
     public function normalisasi()
-    {
-        $kriterias = Kriteria::all();
-        $alternatifs = Alternatif::all();
-        $nilaiKriterias = NilaiKriteria::all();
-    
-        // Step 1: Normalisasi
-        $normalisasi = [];
-        foreach ($kriterias as $kriteria) {
-            $maxValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->max('nilai');
-            $minValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->min('nilai');
-            
-            // Ensure maxValue and minValue are not zero
-            if ($maxValue == 0) {
-                $maxValue = 1; // Assign a non-zero value to avoid division by zero
-            }
-            if ($minValue == 0) {
-                $minValue = 1; // Assign a non-zero value to avoid division by zero
-            }
-    
-            foreach ($alternatifs as $alternatif) {
-                $nilai = NilaiKriteria::where('alternatif_id', $alternatif->id)
-                                        ->where('kriteria_id', $kriteria->id)
-                                        ->first();
-                if ($nilai) {
-                    $normalisasi[$alternatif->id][$kriteria->id] = ($kriteria->jenis == 'benefit') ?
-                        $nilai->nilai / $maxValue :
-                        $nilai->nilai / $minValue;
-                } else {
-                    $normalisasi[$alternatif->id][$kriteria->id] = 0;
-                }
-            }
+{
+    $kriterias = Kriteria::all();
+    $alternatifs = Alternatif::all();
+    $nilaiKriterias = NilaiKriteria::all();
+
+    // Step 1: Normalisasi
+    $normalisasi = [];
+    foreach ($kriterias as $kriteria) {
+        $maxValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->max('nilai');
+        $minValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->min('nilai');
+        
+        // Ensure maxValue and minValue are not zero
+        if ($maxValue == 0) {
+            $maxValue = 1; // Assign a non-zero value to avoid division by zero
         }
-    
-        // Step 2: Menghitung skor SAW
-        $hasilSaw = [];
+        if ($minValue == 0) {
+            $minValue = 1; // Assign a non-zero value to avoid division by zero
+        }
+
         foreach ($alternatifs as $alternatif) {
-            $hasilSaw[$alternatif->id] = 0;
-            foreach ($kriterias as $kriteria) {
-                $hasilSaw[$alternatif->id] += $normalisasi[$alternatif->id][$kriteria->id] * $kriteria->bobot;
+            $nilai = NilaiKriteria::where('alternatif_id', $alternatif->id)
+                                    ->where('kriteria_id', $kriteria->id)
+                                    ->first();
+            if ($nilai) {
+                $normalisasi[$alternatif->id][$kriteria->id] = ($kriteria->jenis == 'benefit') ?
+                    $nilai->nilai / $maxValue :
+                    $minValue / $nilai->nilai;
+            } else {
+                $normalisasi[$alternatif->id][$kriteria->id] = 0;
             }
         }
-    
-        return view('admin.adminkriteria.normalisasi', compact('kriterias', 'alternatifs', 'nilaiKriterias', 'normalisasi', 'hasilSaw'));
     }
+
+    // Step 2: Menghitung skor SAW
+    $hasilSaw = [];
+    foreach ($alternatifs as $alternatif) {
+        $hasilSaw[$alternatif->id] = 0;
+        foreach ($kriterias as $kriteria) {
+            $hasilSaw[$alternatif->id] += $normalisasi[$alternatif->id][$kriteria->id] * $kriteria->bobot;
+        }
+    }
+
+    return view('admin.adminkriteria.normalisasi', compact('kriterias', 'alternatifs', 'nilaiKriterias', 'normalisasi', 'hasilSaw'));
+}
+
     
 
     public function storeNormalisasi(Request $request)
@@ -163,50 +164,52 @@ class KriteriaController extends Controller
 }
 
 
-    public function penilaian()
-    {
-        $kriterias = Kriteria::all();
-        $alternatifs = Alternatif::all();
-        $nilaiKriterias = NilaiKriteria::all();
-    
-        // Step 1: Normalisasi
-        $normalisasi = [];
-        foreach ($kriterias as $kriteria) {
-            $maxValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->max('nilai');
-            $minValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->min('nilai');
-            
-            // Ensure maxValue and minValue are not zero
-            if ($maxValue == 0) {
-                $maxValue = 1; // Assign a non-zero value to avoid division by zero
-            }
-            if ($minValue == 0) {
-                $minValue = 1; // Assign a non-zero value to avoid division by zero
-            }
-    
-            foreach ($alternatifs as $alternatif) {
-                $nilai = NilaiKriteria::where('alternatif_id', $alternatif->id)
-                                        ->where('kriteria_id', $kriteria->id)
-                                        ->first();
-                if ($nilai) {
-                    $normalisasi[$alternatif->id][$kriteria->id] = ($kriteria->jenis == 'benefit') ?
-                        $nilai->nilai / $maxValue :
-                        $nilai->nilai / $minValue;
-                } else {
-                    $normalisasi[$alternatif->id][$kriteria->id] = 0;
-                }
-            }
+public function penilaian()
+{
+    $kriterias = Kriteria::all();
+    $alternatifs = Alternatif::all();
+    $nilaiKriterias = NilaiKriteria::all();
+
+    // Step 1: Normalisasi
+    $normalisasi = [];
+    foreach ($kriterias as $kriteria) {
+        $maxValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->max('nilai');
+        $minValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->min('nilai');
+        
+        // Ensure maxValue and minValue are not zero
+        if ($maxValue == 0) {
+            $maxValue = 1; // Assign a non-zero value to avoid division by zero
         }
-    
-        // Step 2: Menghitung skor SAW
-        $hasilSaw = [];
+        if ($minValue == 0) {
+            $minValue = 1; // Assign a non-zero value to avoid division by zero
+        }
+
         foreach ($alternatifs as $alternatif) {
-            $hasilSaw[$alternatif->id] = 0;
-            foreach ($kriterias as $kriteria) {
-                $hasilSaw[$alternatif->id] += $normalisasi[$alternatif->id][$kriteria->id] * $kriteria->bobot;
+            $nilai = NilaiKriteria::where('alternatif_id', $alternatif->id)
+                                    ->where('kriteria_id', $kriteria->id)
+                                    ->first();
+            if ($nilai) {
+                $normalisasi[$alternatif->id][$kriteria->id] = ($kriteria->jenis == 'benefit') ?
+                    $nilai->nilai / $maxValue :
+                    $minValue / $nilai->nilai;
+            } else {
+                $normalisasi[$alternatif->id][$kriteria->id] = 0;
             }
         }
-        return view('admin.adminpenilaian.index', compact('kriterias', 'alternatifs', 'nilaiKriterias', 'normalisasi', 'hasilSaw'));
     }
+
+    // Step 2: Menghitung skor SAW
+    $hasilSaw = [];
+    foreach ($alternatifs as $alternatif) {
+        $hasilSaw[$alternatif->id] = 0;
+        foreach ($kriterias as $kriteria) {
+            $hasilSaw[$alternatif->id] += $normalisasi[$alternatif->id][$kriteria->id] * $kriteria->bobot;
+        }
+    }
+
+    return view('admin.adminpenilaian.index', compact('kriterias', 'alternatifs', 'nilaiKriterias', 'normalisasi', 'hasilSaw'));
+}
+
     public function perangkingan()
     {
         $kriterias = Kriteria::all();
