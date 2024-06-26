@@ -72,6 +72,7 @@
 </div>
 
 <script>
+    
     // Script untuk mengubah koma menjadi titik sebelum submit form
     document.getElementById('normalisasiForm').addEventListener('submit', function(e) {
         var inputs = document.querySelectorAll('.number-input');

@@ -26,21 +26,21 @@ class SocialiteController extends Controller
         }
     }
 
-    public function redirectToFacebook()
-    {
-        return Socialite::driver('facebook')->redirect();
-    }
+    // public function redirectToFacebook()
+    // {
+    //     return Socialite::driver('facebook')->redirect();
+    // }
 
-    public function handleFacebookCallback()
-    {
-        try {
-            $user = Socialite::driver('facebook')->stateless()->user();
-            $this->_registerOrLoginUser($user);
-            return redirect()->route('home');
-        } catch (Exception $e) {
-            return redirect()->route('login')->withErrors(['error' => 'Something went wrong']);
-        }
-    }
+    // public function handleFacebookCallback()
+    // {
+    //     try {
+    //         $user = Socialite::driver('facebook')->stateless()->user();
+    //         $this->_registerOrLoginUser($user);
+    //         return redirect()->route('home');
+    //     } catch (Exception $e) {
+    //         return redirect()->route('login')->withErrors(['error' => 'Something went wrong']);
+    //     }
+    // }
 
     protected function _registerOrLoginUser($data)
     {

@@ -80,4 +80,5 @@ class AlternatifController extends Controller
         return redirect()->route('admin.alternatif.index')
                          ->with('success', 'Alternatif berhasil dihapus.');
     }
+    
 }

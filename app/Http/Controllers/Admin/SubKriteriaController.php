@@ -82,4 +82,10 @@ class SubKriteriaController extends Controller
 
         return redirect()->route('admin.subkriteria.index')->with('success', 'Sub Kriteria berhasil dihapus.');
     }
+
+    public function showPenilaian()
+{
+    $kriteria = Kriteria::with('subkriteria')->get();
+    return view('user.penilaian.index', compact('kriteria'));
+}
 }

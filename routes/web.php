@@ -16,6 +16,9 @@ use App\Http\Controllers\Admin\KriteriaController;
 use App\Http\Middleware\IsAdmin;
 use App\Mail\ContactFormMail;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\PenilaianController;
+
+
 
 
 
@@ -136,8 +139,8 @@ Route::prefix('admin')->middleware(['auth', 'is_admin'])->group(function () {
 Route::get('auth/google', [SocialiteController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 
-Route::get('auth/facebook', [SocialiteController::class, 'redirectToFacebook'])->name('facebook.login');
-Route::get('auth/facebook/callback', [SocialiteController::class, 'handleFacebookCallback']);
+// Route::get('auth/facebook', [SocialiteController::class, 'redirectToFacebook'])->name('facebook.login');
+// Route::get('auth/facebook/callback', [SocialiteController::class, 'handleFacebookCallback']);
 
 
 // Reset Password Routes
@@ -272,3 +275,5 @@ Route::get('/linkaja/detail', function () {
     return view('detaildompet.linkaja');
 })->name('linkaja.detail');
 
+Route::get('/penilaian/cari', [PenilaianController::class, 'cari'])->name('penilaian.cari');
+Route::get('/alternatif/{id}', [AlternatifController::class, 'show'])->name('alternatif.detail');

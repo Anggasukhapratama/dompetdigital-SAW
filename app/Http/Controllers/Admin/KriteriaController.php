@@ -85,6 +85,11 @@ class KriteriaController extends Controller
         return view('admin.adminkriteria.edit', compact('kriteria'));
     }
 
+
+
+//normalisasi admin
+
+
     public function normalisasi()
 {
     $kriterias = Kriteria::all();
@@ -132,6 +137,7 @@ class KriteriaController extends Controller
 }
 
     
+//button normalisasi
 
     public function storeNormalisasi(Request $request)
 {
@@ -163,6 +169,9 @@ class KriteriaController extends Controller
     return redirect()->route('admin.normalisasi')->with('success', 'Nilai berhasil disimpan dan dinormalisasi.');
 }
 
+
+
+//peniaian admin 
 
 public function penilaian()
 {
@@ -210,6 +219,12 @@ public function penilaian()
     return view('admin.adminpenilaian.index', compact('kriterias', 'alternatifs', 'nilaiKriterias', 'normalisasi', 'hasilSaw'));
 }
 
+
+
+
+
+//perangkingan admin
+
     public function perangkingan()
     {
         $kriterias = Kriteria::all();
@@ -237,7 +252,7 @@ public function penilaian()
                 if ($nilai) {
                     $normalisasi[$alternatif->id][$kriteria->id] = ($kriteria->jenis == 'benefit') ?
                         $nilai->nilai / $maxValue :
-                        $nilai->nilai / $minValue;
+                        $minValue / $nilai->nilai;
                 } else {
                     $normalisasi[$alternatif->id][$kriteria->id] = 0;
                 }
@@ -269,7 +284,12 @@ public function penilaian()
     
         return view('admin.adminperangkingan.index', compact('sortedAlternatifs'));
     }
+
     
+
+
+//penilaian user
+
     public function PenilaianSAW()
     {
         $kriterias = Kriteria::all();
@@ -297,7 +317,7 @@ public function penilaian()
                 if ($nilai) {
                     $normalisasi[$alternatif->id][$kriteria->id] = ($kriteria->jenis == 'benefit') ?
                         $nilai->nilai / $maxValue :
-                        $nilai->nilai / $minValue;
+                        $minValue / $nilai->nilai;
                 } else {
                     $normalisasi[$alternatif->id][$kriteria->id] = 0;
                 }
@@ -329,5 +349,59 @@ public function penilaian()
     
         return view('user.penilaian.index', compact('sortedAlternatifs'));
     }
+
+
+
+    //normalisasiuser
+
+    public function normalisasiSAW()
+    {
+        $kriterias = Kriteria::all();
+        $alternatifs = Alternatif::all();
+        $nilaiKriterias = NilaiKriteria::all();
+    
+        // Step 1: Normalisasi
+        $normalisasi = [];
+        foreach ($kriterias as $kriteria) {
+            $maxValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->max('nilai');
+            $minValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->min('nilai');
+    
+            // Ensure maxValue and minValue are not zero
+            if ($maxValue == 0) {
+                $maxValue = 1; // Assign a non-zero value to avoid division by zero
+            }
+            if ($minValue == 0) {
+                $minValue = 1; // Assign a non-zero value to avoid division by zero
+            }
+    
+            foreach ($alternatifs as $alternatif) {
+                $nilai = NilaiKriteria::where('alternatif_id', $alternatif->id)
+                                        ->where('kriteria_id', $kriteria->id)
+                                        ->first();
+                if ($nilai) {
+                    $normalisasi[$alternatif->id][$kriteria->id] = ($kriteria->jenis == 'benefit') ?
+                        $nilai->nilai / $maxValue :
+                        $minValue / $nilai->nilai;
+                } else {
+                    $normalisasi[$alternatif->id][$kriteria->id] = 0;
+                }
+            }
+        }
+    
+        // Step 2: Menghitung skor SAW
+        $hasilSaw = [];
+        foreach ($alternatifs as $alternatif) {
+            $hasilSaw[$alternatif->id] = 0;
+            foreach ($kriterias as $kriteria) {
+                $hasilSaw[$alternatif->id] += $normalisasi[$alternatif->id][$kriteria->id] * $kriteria->bobot;
+            }
+        }
+    
+        return view('user.penilaian.index', compact('kriterias', 'alternatifs', 'nilaiKriterias', 'normalisasi', 'hasilSaw'));
+    }    
+    
+      
 }
+
+
 

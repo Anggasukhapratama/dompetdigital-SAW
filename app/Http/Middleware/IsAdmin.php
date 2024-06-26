@@ -14,7 +14,7 @@ class IsAdmin
             return $next($request);
         }
         
-        // Jika bukan admin, arahkan ke halaman lain
+      
         return redirect('/')->with('error', 'Unauthorized access.');
     }
 }

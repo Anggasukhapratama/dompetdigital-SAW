@@ -79,7 +79,6 @@
                     <a href="{{ url('/about') }}" class="{{ Request::is('about') ? 'text-blue-600 font-bold' : 'text-gray-600' }} block px-3 py-2 rounded-md text-base font-medium">About</a>
                     <a href="{{ url('/contact') }}" class="{{ Request::is('contact') ? 'text-blue-600 font-bold' : 'text-gray-600' }} block px-3 py-2 rounded-md text-base font-medium">Contact Me</a>
                     @auth
-                    <!-- <a href="{{ url('/pengguna') }}" class="{{ Request::is('pengguna') ? 'text-blue-600 font-bold' : 'text-gray-600' }} block px-3 py-2 rounded-md text-base font-medium">Nilai Preferensi</a> -->
                     <a href="{{ url('/profile') }}" class="{{ Request::is('profile') ? 'text-blue-600 font-bold' : 'text-gray-600' }} block px-3 py-2 rounded-md text-base font-medium">MY Profile</a>
                     @endauth
                 </div>
@@ -91,10 +90,9 @@
                         </div>
                     </div>
                     <div class="mt-4 px-2 space-y-1 sm:px-3">
-                        <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-gray-800">
-                        <a href="galvansa" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-gray-800">Facebook</a>
-                        <a href="galvansa" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-gray-800">Twitter</a>
-                        <a href="galvansa" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-gray-800">Instagram</a>
+                        <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-gray-800">Facebook</a>
+                        <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-gray-800">Twitter</a>
+                        <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-gray-800">Instagram</a>
                     </div>
                 </div>
             </div>
@@ -106,23 +104,16 @@
         </main>
 
         <!-- Footer -->
-        <footer class="bg-gray-800 text-white py-4">
+        <footer class="bg-gray-800 text-white py-6">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center">
-                    <div>
-                        &copy; 2024 DOMPET DIGITAL, Angga sukha pratama.
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="text-center md:text-left mb-4 md:mb-0">
+                        &copy; 2024 DOMPET DIGITAL, Angga Sukha Pratama.
                     </div>
-                    <div>
-                        Follow us on
-                        <a href="#" class="ml-2 text-blue-400 hover:text-blue-300">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="ml-2 text-blue-400 hover:text-blue-300">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="ml-2 text-blue-400 hover:text-blue-300">
-                            <i class="fab fa-instagram"></i>
-                        </a>
+                    <div class="space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-white">Terms of Service</a>
+                        <a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a>
+                        <a href="#" class="text-gray-400 hover:text-white">Contact Us</a>
                     </div>
                 </div>
             </div>

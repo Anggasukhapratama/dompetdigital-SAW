@@ -64,8 +64,7 @@
                         </p>
                     </form>
                     <div class="mt-6">
-                        <a href="{{ route('google.login') }}" class="flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500">Login with Google</a>
-                        <a href="{{ route('facebook.login') }}" class="flex w-full justify-center mt-2 rounded-md bg-blue-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500">Login with Facebook</a>
+                        <a href="{{ route('google.login') }}" class="flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500">Login with Google</a> 
                     </div>
                 </div>
             </div>
