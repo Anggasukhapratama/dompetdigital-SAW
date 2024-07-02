@@ -101,7 +101,7 @@
                 nilaiSelect.appendChild(opt);
             });
         });
-
+          //kenapa tidak mau masuk 
         // Trigger change event on page load to populate the nilai select based on the default kriteria value
         document.getElementById('kriteria').dispatchEvent(new Event('change'));
     </script>

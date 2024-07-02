@@ -108,12 +108,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row justify-between items-center">
                     <div class="text-center md:text-left mb-4 md:mb-0">
-                        &copy; 2024 DOMPET DIGITAL, Angga Sukha Pratama.
-                    </div>
-                    <div class="space-x-6">
-                        <a href="#" class="text-gray-400 hover:text-white">Terms of Service</a>
-                        <a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a>
-                        <a href="#" class="text-gray-400 hover:text-white">Contact Us</a>
+                        &copy; Website Spk SAW (Dompet Digital).
                     </div>
                 </div>
             </div>
