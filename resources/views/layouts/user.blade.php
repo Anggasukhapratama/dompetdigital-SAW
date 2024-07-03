@@ -33,7 +33,7 @@
                                 <a href="{{ url('/contact') }}" class="{{ Request::is('contact') ? 'text-blue-600 font-bold' : 'text-gray-600' }} px-3 py-2 rounded-md text-sm font-medium">Contact Me</a>
                                 @auth
                                 <a href="{{ route('user.penilaian.index') }}" class="{{ Request::is('penilaian-saw') ? 'text-blue-600 font-bold' : 'text-gray-600' }} px-3 py-2 rounded-md text-sm font-medium">Penilaian SAW</a>
-                                <a href="{{ url('/profile') }}" class="{{ Request::is('profile') ? 'text-blue-600 font-bold' : 'text-gray-600' }} px-3 py-2 rounded-md text-sm font-medium">MY Profile</a>
+                                <a href="{{ url('/profile') }}" class="{{ Request::is('profile') ? 'text-blue-600 font-bold' : 'text-gray-600' }} px-3 py-2 rounded-md text-sm font-medium">My Profile</a>
                                 @endauth
                             </div>
                         </div>
@@ -48,7 +48,7 @@
                                     <img class="h-8 w-8 rounded-full" src="https://media.istockphoto.com/id/1341442407/id/vektor/ikon-3d-simbol-manusia-abstrak-avatar-sosial-untuk-komunikasi-online.jpg?s=1024x1024&w=is&k=20&c=PlPmJfS3PZkEI-hvFL5os6FpdHdCxI7Pei7eo8WBgB0=" alt="">
                                 </button>
                             </div>
-                            <div x-show="show" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                            <div x-show="show" x-transition class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
                                 <a href="{{ url('/profile') }}" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
                                 <a href="{{ url('/logout') }}" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
                             </div>
@@ -60,73 +60,65 @@
                         @endif
                         @endauth
                     </div>
-                    <div class="-mr-2 flex md:hidden">
-                        <button type="button" class="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                    <div class="-mr-2 flex md:hidden" x-data="{ showMobileMenu: false }">
+                        <button @click="showMobileMenu = !showMobileMenu" type="button" class="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
                             <span class="sr-only">Open main menu</span>
-                            <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <svg :class="{ 'hidden': showMobileMenu, 'block': !showMobileMenu }" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
-                            <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <svg :class="{ 'hidden': !showMobileMenu, 'block': showMobileMenu }" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
-                    </div>
-                </div>
-            </div>
-            <div class="md:hidden" id="mobile-menu">
-                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                    <a href="{{ url('/') }}" class="{{ Request::is('/') ? 'text-blue-600 font-bold' : 'text-gray-600' }} block px-3 py-2 rounded-md text-base font-medium">Home</a>
-                    <a href="{{ url('/about') }}" class="{{ Request::is('about') ? 'text-blue-600 font-bold' : 'text-gray-600' }} block px-3 py-2 rounded-md text-base font-medium">About</a>
-                    <a href="{{ url('/contact') }}" class="{{ Request::is('contact') ? 'text-blue-600 font-bold' : 'text-gray-600' }} block px-3 py-2 rounded-md text-base font-medium">Contact Me</a>
-                    @auth
-                    <a href="{{ url('/profile') }}" class="{{ Request::is('profile') ? 'text-blue-600 font-bold' : 'text-gray-600' }} block px-3 py-2 rounded-md text-base font-medium">MY Profile</a>
-                    @endauth
-                </div>
-                <div class="pt-4 pb-3 border-t border-gray-700">
-                    <div class="flex items-center px-5">
-                        <div class="ml-3">
-                            <div class="text-base font-medium leading-none text-white">angga</div>
-                            <div class="text-sm font-medium leading-none text-gray-400">karevagalvansa@gmail.com</div>
+                        <div x-show="showMobileMenu" x-transition class="absolute top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden">
+                            <div class="rounded-lg shadow-md bg-white ring-1 ring-black ring-opacity-5 overflow-hidden">
+                                <div class="px-5 pt-4 flex items-center justify-between">
+                                    <div class="text-blue-600 font-bold">
+                                        DOMPET DIGITAL
+                                    </div>
+                                    <div class="-mr-2">
+                                        <button @click="showMobileMenu = !showMobileMenu" type="button" class="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                                            <span class="sr-only">Close main menu</span>
+                                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="px-2 pt-2 pb-3 space-y-1">
+                                    <a href="{{ url('/') }}" class="{{ Request::is('/') ? 'text-blue-600 font-bold' : 'text-gray-600' }} block px-3 py-2 rounded-md text-base font-medium">Home</a>
+                                    <a href="{{ url('/about') }}" class="{{ Request::is('about') ? 'text-blue-600 font-bold' : 'text-gray-600' }} block px-3 py-2 rounded-md text-base font-medium">About</a>
+                                    <a href="{{ url('/contact') }}" class="{{ Request::is('contact') ? 'text-blue-600 font-bold' : 'text-gray-600' }} block px-3 py-2 rounded-md text-base font-medium">Contact Me</a>
+                                    @auth
+                                    <a href="{{ route('user.penilaian.index') }}" class="{{ Request::is('penilaian-saw') ? 'text-blue-600 font-bold' : 'text-gray-600' }} block px-3 py-2 rounded-md text-base font-medium">Penilaian SAW</a>
+                                    <a href="{{ url('/profile') }}" class="{{ Request::is('profile') ? 'text-blue-600 font-bold' : 'text-gray-600' }} block px-3 py-2 rounded-md text-base font-medium">My Profile</a>
+                                    <a href="{{ url('/logout') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600">Sign out</a>
+                                    @else
+                                    <a href="{{ route('login') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600">Log in</a>
+                                    @if (Route::has('register'))
+                                    <a href="{{ route('register') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600">Register</a>
+                                    @endif
+                                    @endauth
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="mt-4 px-2 space-y-1 sm:px-3">
-                        <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-gray-800">Facebook</a>
-                        <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-gray-800">Twitter</a>
-                        <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-gray-800">Instagram</a>
                     </div>
                 </div>
             </div>
         </nav>
-
-        <!-- Page Content -->
-        <main class="flex-1">
-            @yield('content')
+        <!-- Content -->
+        <main class="flex-grow">
+            <div class="py-4">
+                @yield('content')
+            </div>
         </main>
-
         <!-- Footer -->
-        <footer class="bg-gray-800 text-white py-6">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex flex-col md:flex-row justify-between items-center">
-                    <div class="text-center md:text-left mb-4 md:mb-0">
-                        &copy; Website Spk SAW (Dompet Digital).
-                    </div>
-                </div>
+        <footer class="bg-white">
+            <div class="max-w-7xl mx-auto py-4 px-4 overflow-hidden sm:px-6 lg:px-8">
+                <p class="mt-8 text-center text-base text-gray-400">&copy; 2023 Dompet Digital. All rights reserved.</p>
             </div>
         </footer>
     </div>
-
-    <!-- Bell and Greeting -->
-    <div x-data="{ showBell: true }" x-show="showBell" class="fixed bottom-0 right-0 mr-6 mb-6 z-50">
-        <button @click="showBell = false" class="bg-blue-600 text-white rounded-full p-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <i class="fas fa-bell"></i>
-        </button>
-        <div class="absolute bottom-0 right-0 mb-16 bg-white shadow-lg rounded-lg py-3 px-4 w-60">
-            <p class="text-sm text-gray-600">Selamat datang di website penilaian dompet digital saw.</p>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-    </script>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </html>
