@@ -20,7 +20,7 @@
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $index + 1 }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $data['alternatif']->nama }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ number_format($data['nilai_saw'], 2) }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ number_format($data['nilai_saw'], 10) }}</td>
                         </tr>
                     @endforeach
                 </tbody>

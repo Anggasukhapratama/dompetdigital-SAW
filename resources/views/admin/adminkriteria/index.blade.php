@@ -36,7 +36,7 @@
                             <td class="border px-4 py-2">{{ $loop->iteration }}</td>
                             <td class="border px-4 py-2">{{ $kriteria->kode }}</td>
                             <td class="border px-4 py-2">{{ $kriteria->nama }}</td>
-                            <td class="border px-4 py-2">{{ $kriteria->bobot }}</td>
+                            <td class="border px-4 py-2">{{ number_format($kriteria->bobot / 100, 2) }}</td>
                             <td class="border px-4 py-2">{{ $kriteria->jenis }}</td>
                             <td class="border px-4 py-2">
                                 <div class="flex space-x-2">

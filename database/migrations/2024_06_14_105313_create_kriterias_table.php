@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('kode');
             $table->string('nama');
-            $table->integer('bobot'); // Changed to integer
+            $table->decimal('bobot', 5, 2); // Changed to decimal with precision and scale
             $table->enum('jenis', ['benefit', 'cost']);
             $table->timestamps();
         });

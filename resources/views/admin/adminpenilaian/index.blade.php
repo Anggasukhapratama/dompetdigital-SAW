@@ -21,7 +21,7 @@
                     @foreach($alternatifs as $alternatif)
                         <tr>
                             <td class="border-b border-gray-300 px-6 py-4 whitespace-nowrap">{{ $alternatif->nama }}</td>
-                            <td class="border-b border-gray-300 px-6 py-4 whitespace-nowrap">{{ number_format($hasilSaw[$alternatif->id], 2) }}</td>
+                            <td class="border-b border-gray-300 px-6 py-4 whitespace-nowrap">{{ number_format($hasilSaw[$alternatif->id], 10) }}</td>
                         </tr>
                     @endforeach
                 </tbody>

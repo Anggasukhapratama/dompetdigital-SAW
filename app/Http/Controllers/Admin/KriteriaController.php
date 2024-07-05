@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -30,7 +31,7 @@ class KriteriaController extends Controller
         $request->validate([
             'kode' => 'required|string',
             'nama' => 'required|string',
-            'bobot' => 'required|integer|min:0|max:100',
+            'bobot' => 'required|numeric|min:0|max:100',
             'jenis' => ['required', Rule::in(['benefit', 'cost'])],
         ]);
     
@@ -50,7 +51,7 @@ class KriteriaController extends Controller
         $request->validate([
             'kode' => 'required|string',
             'nama' => 'required|string',
-            'bobot' => 'required|integer|min:0|max:100',
+            'bobot' => 'required|numeric|min:0|max:100',
             'jenis' => ['required', Rule::in(['benefit', 'cost'])],
         ]);
     
@@ -70,161 +71,149 @@ class KriteriaController extends Controller
     {
         return view('admin.adminkriteria.create');
     }
-
+    
     public function destroy($id)
     {
         $kriteria = Kriteria::findOrFail($id);
         $kriteria->delete();
-
+    
         return redirect()->route('admin.kriteria.index')->with('success', 'Kriteria berhasil dihapus.');
     }
-
+    
     public function edit($id)
     {
         $kriteria = Kriteria::findOrFail($id);
         return view('admin.adminkriteria.edit', compact('kriteria'));
     }
-
-
-
-//normalisasi admin
-
-
-    public function normalisasi()
-{
-    $kriterias = Kriteria::all();
-    $alternatifs = Alternatif::all();
-    $nilaiKriterias = NilaiKriteria::all();
-
-    // Step 1: Normalisasi
-    $normalisasi = [];
-    foreach ($kriterias as $kriteria) {
-        $maxValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->max('nilai');
-        $minValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->min('nilai');
-        
-        // Ensure maxValue and minValue are not zero
-        if ($maxValue == 0) {
-            $maxValue = 1; // Assign a non-zero value to avoid division by zero
-        }
-        if ($minValue == 0) {
-            $minValue = 1; // Assign a non-zero value to avoid division by zero
-        }
-
-        foreach ($alternatifs as $alternatif) {
-            $nilai = NilaiKriteria::where('alternatif_id', $alternatif->id)
-                                    ->where('kriteria_id', $kriteria->id)
-                                    ->first();
-            if ($nilai) {
-                $normalisasi[$alternatif->id][$kriteria->id] = ($kriteria->jenis == 'benefit') ?
-                    $nilai->nilai / $maxValue :
-                    $minValue / $nilai->nilai;
-            } else {
-                $normalisasi[$alternatif->id][$kriteria->id] = 0;
-            }
-        }
-    }
-
-    // Step 2: Menghitung skor SAW
-    $hasilSaw = [];
-    foreach ($alternatifs as $alternatif) {
-        $hasilSaw[$alternatif->id] = 0;
-        foreach ($kriterias as $kriteria) {
-            $hasilSaw[$alternatif->id] += $normalisasi[$alternatif->id][$kriteria->id] * $kriteria->bobot;
-        }
-    }
-
-    return view('admin.adminkriteria.normalisasi', compact('kriterias', 'alternatifs', 'nilaiKriterias', 'normalisasi', 'hasilSaw'));
-}
-
     
-//button normalisasi
-
-    public function storeNormalisasi(Request $request)
-{
-    $data = $request->input('nilai');
-
-    // Validate that none of the nilai values are null
-    foreach ($data as $alternatifId => $nilaiKriterias) {
-        foreach ($nilaiKriterias as $kriteriaId => $nilai) {
-            if (is_null($nilai)) {
-                return redirect()->route('admin.normalisasi')->with('error', 'Nilai tidak boleh kosong.');
-            }
-        }
-    }
-
-    foreach ($data as $alternatifId => $nilaiKriterias) {
-        foreach ($nilaiKriterias as $kriteriaId => $nilai) {
-            NilaiKriteria::updateOrCreate(
-                [
-                    'alternatif_id' => $alternatifId,
-                    'kriteria_id' => $kriteriaId,
-                ],
-                [
-                    'nilai' => $nilai
-                ]
-            );
-        }
-    }
-
-    return redirect()->route('admin.normalisasi')->with('success', 'Nilai berhasil disimpan dan dinormalisasi.');
-}
-
-
-
-//peniaian admin 
-
-public function penilaian()
-{
-    $kriterias = Kriteria::all();
-    $alternatifs = Alternatif::all();
-    $nilaiKriterias = NilaiKriteria::all();
-
-    // Step 1: Normalisasi
-    $normalisasi = [];
-    foreach ($kriterias as $kriteria) {
-        $maxValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->max('nilai');
-        $minValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->min('nilai');
-        
-        // Ensure maxValue and minValue are not zero
-        if ($maxValue == 0) {
-            $maxValue = 1; // Assign a non-zero value to avoid division by zero
-        }
-        if ($minValue == 0) {
-            $minValue = 1; // Assign a non-zero value to avoid division by zero
-        }
-
-        foreach ($alternatifs as $alternatif) {
-            $nilai = NilaiKriteria::where('alternatif_id', $alternatif->id)
-                                    ->where('kriteria_id', $kriteria->id)
-                                    ->first();
-            if ($nilai) {
-                $normalisasi[$alternatif->id][$kriteria->id] = ($kriteria->jenis == 'benefit') ?
-                    $nilai->nilai / $maxValue :
-                    $minValue / $nilai->nilai;
-            } else {
-                $normalisasi[$alternatif->id][$kriteria->id] = 0;
-            }
-        }
-    }
-
-    // Step 2: Menghitung skor SAW
-    $hasilSaw = [];
-    foreach ($alternatifs as $alternatif) {
-        $hasilSaw[$alternatif->id] = 0;
+    public function normalisasi()
+    {
+        $kriterias = Kriteria::all();
+        $alternatifs = Alternatif::all();
+        $nilaiKriterias = NilaiKriteria::all();
+    
+        // Step 1: Normalisasi
+        $normalisasi = [];
         foreach ($kriterias as $kriteria) {
-            $hasilSaw[$alternatif->id] += $normalisasi[$alternatif->id][$kriteria->id] * $kriteria->bobot;
+            $maxValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->max('nilai');
+            $minValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->min('nilai');
+            
+            // Ensure maxValue and minValue are not zero
+            if ($maxValue == 0) {
+                $maxValue = 1; // Assign a non-zero value to avoid division by zero
+            }
+            if ($minValue == 0) {
+                $minValue = 1; // Assign a non-zero value to avoid division by zero
+            }
+    
+            foreach ($alternatifs as $alternatif) {
+                $nilai = NilaiKriteria::where('alternatif_id', $alternatif->id)
+                                        ->where('kriteria_id', $kriteria->id)
+                                        ->first();
+                if ($nilai) {
+                    $normalisasi[$alternatif->id][$kriteria->id] = ($kriteria->jenis == 'benefit') ?
+                        $nilai->nilai / $maxValue :
+                        $minValue / $nilai->nilai;
+                } else {
+                    $normalisasi[$alternatif->id][$kriteria->id] = 0;
+                }
+            }
         }
+    
+        // Menghitung skor SAW
+        $hasilSaw = [];
+        foreach ($alternatifs as $alternatif) {
+            $hasilSaw[$alternatif->id] = 0;
+            foreach ($kriterias as $kriteria) {
+                $bobot = $kriteria->bobot / 100; // Divide the weight by 100
+                $hasilSaw[$alternatif->id] += $normalisasi[$alternatif->id][$kriteria->id] * $bobot;
+            }
+            // Format nilai SAW menjadi dua angka desimal
+            $hasilSaw[$alternatif->id] = number_format($hasilSaw[$alternatif->id], 4); // Change to 4 decimal places
+        }
+    
+        return view('admin.adminkriteria.normalisasi', compact('kriterias', 'alternatifs', 'nilaiKriterias', 'normalisasi', 'hasilSaw'));
     }
-
-    return view('admin.adminpenilaian.index', compact('kriterias', 'alternatifs', 'nilaiKriterias', 'normalisasi', 'hasilSaw'));
-}
-
-
-
-
-
-//perangkingan admin
-
+    
+    public function storeNormalisasi(Request $request)
+    {
+        $data = $request->input('nilai');
+    
+        // Validate that none of the nilai values are null
+        foreach ($data as $alternatifId => $nilaiKriterias) {
+            foreach ($nilaiKriterias as $kriteriaId => $nilai) {
+                if (is_null($nilai)) {
+                    return redirect()->route('admin.normalisasi')->with('error', 'Nilai tidak boleh kosong.');
+                }
+            }
+        }
+    
+        foreach ($data as $alternatifId => $nilaiKriterias) {
+            foreach ($nilaiKriterias as $kriteriaId => $nilai) {
+                NilaiKriteria::updateOrCreate(
+                    [
+                        'alternatif_id' => $alternatifId,
+                        'kriteria_id' => $kriteriaId,
+                    ],
+                    [
+                        'nilai' => $nilai
+                    ]
+                );
+            }
+        }
+    
+        return redirect()->route('admin.normalisasi')->with('success', 'Nilai berhasil disimpan dan dinormalisasi.');
+    }
+    
+    public function penilaian()
+    {
+        $kriterias = Kriteria::all();
+        $alternatifs = Alternatif::all();
+        $nilaiKriterias = NilaiKriteria::all();
+    
+        // Step 1: Normalisasi
+        $normalisasi = [];
+        foreach ($kriterias as $kriteria) {
+            $maxValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->max('nilai');
+            $minValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->min('nilai');
+            
+            // Ensure maxValue and minValue are not zero
+            if ($maxValue == 0) {
+                $maxValue = 1; // Assign a non-zero value to avoid division by zero
+            }
+            if ($minValue == 0) {
+                $minValue = 1; // Assign a non-zero value to avoid division by zero
+            }
+    
+            foreach ($alternatifs as $alternatif) {
+                $nilai = NilaiKriteria::where('alternatif_id', $alternatif->id)
+                                        ->where('kriteria_id', $kriteria->id)
+                                        ->first();
+                if ($nilai) {
+                    $normalisasi[$alternatif->id][$kriteria->id] = ($kriteria->jenis == 'benefit') ?
+                        $nilai->nilai / $maxValue :
+                        $minValue / $nilai->nilai;
+                } else {
+                    $normalisasi[$alternatif->id][$kriteria->id] = 0;
+                }
+            }
+        }
+    
+        // Menghitung skor SAW
+        $hasilSaw = [];
+        foreach ($alternatifs as $alternatif) {
+            $hasilSaw[$alternatif->id] = 0;
+            foreach ($kriterias as $kriteria) {
+                $bobot = $kriteria->bobot / 100; // Divide the weight by 100
+                $hasilSaw[$alternatif->id] += $normalisasi[$alternatif->id][$kriteria->id] * $bobot;
+            }
+            // Format nilai SAW menjadi sepuluh angka desimal
+            $hasilSaw[$alternatif->id] = number_format($hasilSaw[$alternatif->id], 10); // Change to 10 decimal places
+        }
+    
+        return view('admin.adminpenilaian.index', compact('kriterias', 'alternatifs', 'nilaiKriterias', 'normalisasi', 'hasilSaw'));
+    }
+    
     public function perangkingan()
     {
         $kriterias = Kriteria::all();
@@ -259,37 +248,33 @@ public function penilaian()
             }
         }
     
-        // Step 2: Menghitung skor SAW
+        // Menghitung skor SAW
         $hasilSaw = [];
         foreach ($alternatifs as $alternatif) {
             $hasilSaw[$alternatif->id] = 0;
             foreach ($kriterias as $kriteria) {
-                $hasilSaw[$alternatif->id] += $normalisasi[$alternatif->id][$kriteria->id] * $kriteria->bobot;
+                $bobot = $kriteria->bobot / 100; // Divide the weight by 100
+                $hasilSaw[$alternatif->id] += $normalisasi[$alternatif->id][$kriteria->id] * $bobot;
             }
+            // Format nilai SAW menjadi sepuluh angka desimal
+            $hasilSaw[$alternatif->id] = number_format($hasilSaw[$alternatif->id], 10); // Change to 10 decimal places
         }
-        // Urutkan hasil SAW dari yang tertinggi ke terendah
+    
+        // Step 3: Perangkingan
         arsort($hasilSaw);
     
-        // Format hasil perangkingan untuk ditampilkan di view
+        // Prepare sorted alternatives
         $sortedAlternatifs = [];
-        foreach ($hasilSaw as $alternatifId => $nilaiSaw) {
-            $alternatif = Alternatif::find($alternatifId);
-            if ($alternatif) {
-                $sortedAlternatifs[] = [
-                    'alternatif' => $alternatif,
-                    'nilai_saw' => $nilaiSaw,
-                ];
-            }
+        foreach ($hasilSaw as $alternatifId => $nilai_saw) {
+            $sortedAlternatifs[] = [
+                'alternatif' => Alternatif::find($alternatifId),
+                'nilai_saw' => $nilai_saw
+            ];
         }
     
         return view('admin.adminperangkingan.index', compact('sortedAlternatifs'));
     }
-
     
-
-
-//penilaian user
-
     public function PenilaianSAW()
     {
         $kriterias = Kriteria::all();
@@ -324,84 +309,21 @@ public function penilaian()
             }
         }
     
-        // Step 2: Menghitung skor SAW
+        // Menghitung skor SAW
         $hasilSaw = [];
         foreach ($alternatifs as $alternatif) {
             $hasilSaw[$alternatif->id] = 0;
             foreach ($kriterias as $kriteria) {
-                $hasilSaw[$alternatif->id] += $normalisasi[$alternatif->id][$kriteria->id] * $kriteria->bobot;
+                $bobot = $kriteria->bobot / 100; // Divide the weight by 100
+                $hasilSaw[$alternatif->id] += $normalisasi[$alternatif->id][$kriteria->id] * $bobot;
             }
+            // Format nilai SAW menjadi dua angka desimal
+            $hasilSaw[$alternatif->id] = number_format($hasilSaw[$alternatif->id], 4); // Change to 4 decimal places
         }
-        // Urutkan hasil SAW dari yang tertinggi ke terendah
+    
+        // Step 3: Perangkingan
         arsort($hasilSaw);
     
-        // Format hasil perangkingan untuk ditampilkan di view
-        $sortedAlternatifs = [];
-        foreach ($hasilSaw as $alternatifId => $nilaiSaw) {
-            $alternatif = Alternatif::find($alternatifId);
-            if ($alternatif) {
-                $sortedAlternatifs[] = [
-                    'alternatif' => $alternatif,
-                    'nilai_saw' => $nilaiSaw,
-                ];
-            }
-        }
-    
-        return view('user.penilaian.index', compact('sortedAlternatifs'));
+        return view('admin.adminsaw.index', compact('kriterias', 'alternatifs', 'nilaiKriterias', 'normalisasi', 'hasilSaw'));
     }
-
-
-
-    //normalisasiuser
-
-    public function normalisasiSAW()
-    {
-        $kriterias = Kriteria::all();
-        $alternatifs = Alternatif::all();
-        $nilaiKriterias = NilaiKriteria::all();
-    
-        // Step 1: Normalisasi
-        $normalisasi = [];
-        foreach ($kriterias as $kriteria) {
-            $maxValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->max('nilai');
-            $minValue = NilaiKriteria::where('kriteria_id', $kriteria->id)->min('nilai');
-    
-            // Ensure maxValue and minValue are not zero
-            if ($maxValue == 0) {
-                $maxValue = 1; // Assign a non-zero value to avoid division by zero
-            }
-            if ($minValue == 0) {
-                $minValue = 1; // Assign a non-zero value to avoid division by zero
-            }
-    
-            foreach ($alternatifs as $alternatif) {
-                $nilai = NilaiKriteria::where('alternatif_id', $alternatif->id)
-                                        ->where('kriteria_id', $kriteria->id)
-                                        ->first();
-                if ($nilai) {
-                    $normalisasi[$alternatif->id][$kriteria->id] = ($kriteria->jenis == 'benefit') ?
-                        $nilai->nilai / $maxValue :
-                        $minValue / $nilai->nilai;
-                } else {
-                    $normalisasi[$alternatif->id][$kriteria->id] = 0;
-                }
-            }
-        }
-    
-        // Step 2: Menghitung skor SAW
-        $hasilSaw = [];
-        foreach ($alternatifs as $alternatif) {
-            $hasilSaw[$alternatif->id] = 0;
-            foreach ($kriterias as $kriteria) {
-                $hasilSaw[$alternatif->id] += $normalisasi[$alternatif->id][$kriteria->id] * $kriteria->bobot;
-            }
-        }
-    
-        return view('user.penilaian.index', compact('kriterias', 'alternatifs', 'nilaiKriterias', 'normalisasi', 'hasilSaw'));
-    }    
-    
-      
 }
-
-
-
