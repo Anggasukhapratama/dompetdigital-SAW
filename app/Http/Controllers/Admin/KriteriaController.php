@@ -324,6 +324,6 @@ class KriteriaController extends Controller
         // Step 3: Perangkingan
         arsort($hasilSaw);
     
-        return view('admin.adminsaw.index', compact('kriterias', 'alternatifs', 'nilaiKriterias', 'normalisasi', 'hasilSaw'));
+        return view('user.penilaian.index', compact('kriterias', 'alternatifs', 'nilaiKriterias', 'normalisasi', 'hasilSaw'));
     }
 }
